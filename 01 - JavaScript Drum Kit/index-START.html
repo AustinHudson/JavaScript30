@@ -59,7 +59,28 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+    window.addEventListener("keydown", playDrum)
 
+    const keys = Array.from(document.querySelectorAll('.key'))
+    keys.forEach((key) => {
+      key.addEventListener('transitionend', removePlayingClass)
+    })
+
+    function playDrum (event) {
+      const drumElement = document.querySelector(`div[data-key="${event.keyCode}"]`)
+      const audioElement = document.querySelector(`audio[data-key="${event.keyCode}"]`)
+      if (drumElement && audioElement) {
+        drumElement.classList.add('playing')
+        audioElement.currentTime = 0;
+        audioElement.play()
+      } else {
+        console.log('not a valid key in drumset')
+      }
+    }
+
+    function removePlayingClass () {
+        this.classList.remove('playing')
+    }
 </script>
 
 
