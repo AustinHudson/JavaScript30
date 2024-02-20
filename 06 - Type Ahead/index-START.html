@@ -18,6 +18,42 @@
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+const cities = []
+
+fetch(endpoint)
+  .then(res => res.json())
+  .then(data => cities.push(...data))
+
+function findMatches(wordsToMatch, cities) {
+  return cities.filter((c) => {
+    const regex = new RegExp(wordsToMatch, 'gi');
+   return c.city.match(regex) || c.state.match(regex)
+  })
+}
+const suggestionsList = document.querySelector('.suggestions')
+function displayMatches() {
+  const matchArray = findMatches(this.value, cities)
+  const html = matchArray.map((place) => {
+    const li = document.createElement('li')
+    const span1 = document.createElement('span')
+    const span2 = document.createElement('span')
+    span2.classList.add('population')
+
+    const regex = new RegExp(this.value, 'gi')
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`)
+    const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`)
+
+    span1.innerHTML = `${cityName}, ${stateName}`
+    span2.textContent = `${place.population}`
+    li.append(span1, span2)
+    return li;
+  })
+  suggestionsList.replaceChildren(...html)
+}
+
+const searchInput = document.querySelector('.search')
+searchInput.addEventListener('input', displayMatches)
+
 </script>
 </body>
 </html>
